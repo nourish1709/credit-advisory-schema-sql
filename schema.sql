@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS advisor;
 DROP TYPE IF EXISTS role;
 DROP TABLE IF EXISTS "user";
 
-CREATE TABLE "user"
+CREATE TABLE IF NOT EXISTS "user"
 (
     id       BIGSERIAL,
     email    TEXT NOT NULL,
@@ -19,19 +19,19 @@ CREATE TABLE "user"
     CONSTRAINT user_username_UQ UNIQUE (username)
 );
 
-CREATE TYPE role AS ENUM ('associate', 'partner', 'senior');
+CREATE TYPE "role" AS ENUM ('associate', 'partner', 'senior');
 
-CREATE TABLE advisor
+CREATE TABLE IF NOT EXISTS advisor
 (
     id      BIGSERIAL,
     user_id BIGINT NOT NULL,
-    role    role   NOT NULL,
+    "role"    "role" NOT NULL,
     CONSTRAINT advisor_PK PRIMARY KEY (id),
     CONSTRAINT advisor_user_FK FOREIGN KEY (user_id) REFERENCES "user",
     CONSTRAINT advisor_user_id_UQ UNIQUE (user_id)
 );
 
-CREATE TABLE applicant
+CREATE TABLE IF NOT EXISTS applicant
 (
     id         BIGSERIAL,
     user_id    BIGINT NOT NULL,
@@ -43,21 +43,21 @@ CREATE TABLE applicant
     CONSTRAINT applicant_user_id_UQ UNIQUE (user_id)
 );
 
-CREATE TABLE applicant_address
+CREATE TABLE IF NOT EXISTS applicant_address
 (
     id     BIGINT,
     city   TEXT NOT NULL,
     street TEXT NOT NULL,
     number INT  NOT NULL,
     zip    INT  NOT NULL,
-    apt    INT  NOT NULL,
+    apt    INT,
     CONSTRAINT applicant_address_PK PRIMARY KEY (id),
     CONSTRAINT applicant_address_applicant_FK FOREIGN KEY (id) REFERENCES applicant
 );
 
 CREATE TYPE phone_type AS ENUM ('home', 'work', 'mobile');
 
-CREATE TABLE applicant_phone_number
+CREATE TABLE IF NOT EXISTS applicant_phone_number
 (
     id           BIGSERIAL,
     applicant_id BIGINT     NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE applicant_phone_number
 
 CREATE TYPE application_status AS ENUM ('new', 'assigned', 'on_hold', 'approved', 'canceled', 'declined');
 
-CREATE TABLE application
+CREATE TABLE IF NOT EXISTS application
 (
     id           BIGSERIAL,
     applicant_id BIGINT             NOT NULL,
